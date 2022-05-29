@@ -612,8 +612,12 @@ static int rtl8367b_write_initvals(struct rtl8366_smi *smi,
 	int err;
 	int i;
 
-	for (i = 0; i < count; i++)
-		REG_WR(smi, initvals[i].reg, initvals[i].val);
+	// XXX Skip writing initvals, Otherwise port0 of HiWiFi R33 will be
+	// down (no link detection).
+	if (false) {
+		for (i = 0; i < count; i++)
+			REG_WR(smi, initvals[i].reg, initvals[i].val);
+	}
 
 	return 0;
 }
@@ -1540,7 +1544,9 @@ static int rtl8367b_detect(struct rtl8366_smi *smi)
 		return ret;
 	}
 
+	// RTL8367RB for HiWiFi has chip num 0x6367 and chip ver 0x0020
 	switch (chip_ver) {
+	case 0x0020:
 	case 0x1000:
 		chip_name = "8367RB";
 		break;
